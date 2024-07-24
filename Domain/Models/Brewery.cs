@@ -6,4 +6,5 @@ public class Brewery
     public string Address { get; set; } = default!;
 
     public IList<Brewer> Brewers { get; set; } = [];
+    public IList<Beer> Beers { get; set; } = [];
 }
