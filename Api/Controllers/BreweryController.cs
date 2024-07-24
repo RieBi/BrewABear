@@ -1,5 +1,5 @@
-﻿using Application.Queries.BreweryQueries;
-using Domain.Models;
+﻿using Application.DTOs;
+using Application.Queries.BreweryQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +13,7 @@ public class BreweryController(IMediator mediator) : ControllerBase
     [HttpGet]
     [Route("All")]
     [Route("")]
-    public async Task<IList<Brewery>> All()
+    public async Task<IList<BreweryDto>> All()
     {
         var breweries = await _mediator.Send(new GetAllBreweriesQuery());
 

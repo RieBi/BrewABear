@@ -9,7 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(opt => opt.SupportNonNullableReferenceTypes());
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 if (string.IsNullOrEmpty(connectionString))
@@ -20,6 +20,7 @@ if (string.IsNullOrEmpty(connectionString))
 builder.Services.AddDatabase(connectionString!);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IStarter>());
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfiles>());
 
 var app = builder.Build();
 

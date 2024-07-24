@@ -1,5 +1,4 @@
-﻿namespace Api.DTOs;
-
+﻿namespace Application.DTOs;
 public class BreweryDto
 {
     public string Id { get; set; } = default!;

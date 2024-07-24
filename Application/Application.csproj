@@ -16,10 +16,13 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="MediatR" Version="12.4.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <Using Include="Application.DTOs" />
+    <Using Include="AutoMapper" />
     <Using Include="Data" />
     <Using Include="Domain.Models" />
     <Using Include="MediatR" />

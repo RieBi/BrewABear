@@ -1,2 +1,2 @@
 ﻿namespace Application.Queries.BreweryQueries;
-public record GetAllBreweriesQuery : IRequest<IList<Brewery>>;
+public record GetAllBreweriesQuery : IRequest<IList<BreweryDto>>;
