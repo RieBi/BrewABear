@@ -10,6 +10,10 @@ internal class BreweryConfiguration : IEntityTypeConfiguration<Brewery>
     {
         builder.HasKey(f => f.Id);
         builder.Property(f => f.Name).HasMaxLength(DomainConfig.NameLength);
-        builder.Property(f => f.Address).HasMaxLength(200);
+        builder.Property(f => f.Address).HasMaxLength(DomainConfig.AddressLength);
+
+        builder
+            .HasMany(f => f.Brewers)
+            .WithOne(f => f.Brewery);
     }
 }
