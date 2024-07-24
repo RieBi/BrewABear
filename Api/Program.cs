@@ -1,3 +1,4 @@
+using Application;
 using Data;
 using Data.DataSeeding;
 
@@ -18,6 +19,8 @@ if (string.IsNullOrEmpty(connectionString))
 
 builder.Services.AddDatabase(connectionString!);
 
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IStarter>());
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -32,8 +35,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
-
-
 
 using (var scope = app.Services.CreateScope())
 {
