@@ -1,4 +1,4 @@
-# brew-a-beer
+# brew-a-bear
 Management system for breweries and wholesalers.
 
 ## Idea
