@@ -115,18 +115,21 @@ public class DataSeeder(DataContext context)
                 Id = CreateGuid(),
                 Beer = beers[0],
                 Quantity = 5,
+                Wholesaler = wholesalers[0],
             },
             new()
             {
                 Id = CreateGuid(),
                 Beer = beers[1],
                 Quantity = 10,
+                Wholesaler = wholesalers[1],
             },
             new()
             {
                 Id = CreateGuid(),
                 Beer = beers[2],
                 Quantity = 7,
+                Wholesaler = wholesalers[1],
             },
         ];
 
