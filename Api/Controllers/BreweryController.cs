@@ -12,7 +12,6 @@ public class BreweryController(IMediator mediator) : ControllerBase
 
     [HttpGet]
     [Route("All")]
-    [Route("")]
     public async Task<IList<BreweryDto>> All()
     {
         var breweries = await _mediator.Send(new GetAllBreweriesQuery());
