@@ -7,7 +7,7 @@ internal class WholesalerInventoryConfiguration : IEntityTypeConfiguration<Whole
 {
     public void Configure(EntityTypeBuilder<WholesalerInventory> builder)
     {
-        builder.HasKey(f => new object[] { f.Beer, f.Wholesaler });
+        builder.HasKey(f => new { f.BeerId, f.WholesalerId });
 
         builder
             .HasOne(f => f.Wholesaler)
