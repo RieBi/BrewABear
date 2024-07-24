@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Data.ModelConfigurations;
+using Domain.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data;
@@ -12,8 +13,10 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     public DbSet<Wholesaler> Wholesalers { get; set; }
     public DbSet<WholesalerInventory> WholesalerInventories { get; set; }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    protected override void OnModelCreating(ModelBuilder builder)
     {
-        base.OnModelCreating(modelBuilder);
+        base.OnModelCreating(builder);
+
+        builder.ApplyConfigurationsFromAssembly(typeof(DataContext).Assembly);
     }
 }
