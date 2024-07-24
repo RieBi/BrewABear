@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Data.DataSeeding;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Data;
@@ -10,5 +11,7 @@ public static class DependencyInjection
         {
             options.UseSqlite(connectionString);
         });
+
+        services.AddScoped<DataSeeder>();
     }
 }

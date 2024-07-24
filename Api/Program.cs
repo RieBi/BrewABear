@@ -1,4 +1,5 @@
 using Data;
+using Data.DataSeeding;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,4 +33,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.Run();
+
+
+using (var scope = app.Services.CreateScope())
+{
+    var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
+    seeder.ApplySeeding();
+}
+
+await app.RunAsync();

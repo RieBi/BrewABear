@@ -15,8 +15,5 @@ public class DataContext(DbContextOptions<DataContext> options) : DbContext(opti
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-
-        Database.EnsureDeleted();
-        Database.EnsureCreated();
     }
 }
