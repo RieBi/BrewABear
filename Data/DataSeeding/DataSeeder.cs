@@ -90,6 +90,48 @@ public class DataSeeder(DataContext context)
             }
         ];
 
+        _context.Beers.AddRange(beers);
+
+        IList<Wholesaler> wholesalers =
+        [
+            new()
+            {
+                Id = CreateGuid(),
+                Name = "Branch Industries",
+            },
+            new()
+            {
+                Id = CreateGuid(),
+                Name = "Capybara Seasonal Inc.",
+            },
+        ];
+
+        _context.Wholesalers.AddRange(wholesalers);
+
+        IList<BeerSale> beerSales =
+        [
+            new()
+            {
+                Id = CreateGuid(),
+                Beer = beers[0],
+                Quantity = 5,
+            },
+            new()
+            {
+                Id = CreateGuid(),
+                Beer = beers[1],
+                Quantity = 10,
+            },
+            new()
+            {
+                Id = CreateGuid(),
+                Beer = beers[2],
+                Quantity = 7,
+            },
+        ];
+
+        _context.BeerSales.AddRange(beerSales);
+
         _context.SaveChanges();
     }
 
