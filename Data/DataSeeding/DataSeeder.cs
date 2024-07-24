@@ -132,8 +132,52 @@ public class DataSeeder(DataContext context)
 
         _context.BeerSales.AddRange(beerSales);
 
+        IList<Order> orders =
+        [
+            new()
+            {
+                Id = CreateGuid(),
+                ClientEmail = "AbcSuperEmail@abc.example.org",
+                Beer = beers[0],
+                PricePerBear = 20,
+                DiscountPercentage = .1M,
+                Quantity = 25,
+                Wholesaler = wholesalers[0],
+            },
+            new()
+            {
+                Id = CreateGuid(),
+                ClientEmail = "AbsSuperEmail@abc.example.org",
+                Beer = beers[1],
+                PricePerBear = 89,
+                DiscountPercentage = .2M,
+                Quantity = 33,
+                Wholesaler = wholesalers[1],
+            },
+        ];
+
+        _context.Orders.AddRange(orders);
+
+        IList<WholesalerInventory> wholesalerInventories =
+        [
+            new()
+            {
+                Beer = beers[0],
+                Wholesaler = wholesalers[0],
+                Quantity = 5,
+            },
+            new()
+            {
+                Beer = beers[2],
+                Wholesaler = wholesalers[1],
+                Quantity = 7,
+            },
+        ];
+
+        _context.WholesalerInventories.AddRange(wholesalerInventories);
+
         _context.SaveChanges();
     }
 
-    private string CreateGuid() => Guid.NewGuid().ToString();
+    private static string CreateGuid() => Guid.NewGuid().ToString();
 }
