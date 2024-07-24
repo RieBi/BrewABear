@@ -6,4 +6,6 @@ public class Brewer
     public string FirstName { get; set; } = default!;
     public string? LastName { get; set; } = default;
     public string ContactEmail { get; set; } = default!;
+
+    public IList<Beer> Beers { get; set; } = [];
 }
