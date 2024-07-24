@@ -5,5 +5,6 @@ public class MappingProfiles : Profile
 	{
 		CreateMap<Brewery, BreweryDto>();
 		CreateMap<Beer, BeerDto>();
+		CreateMap<Brewer, BrewerDto>();
 	}
 }
