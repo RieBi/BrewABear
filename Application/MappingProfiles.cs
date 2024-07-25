@@ -10,7 +10,7 @@ public class MappingProfiles : Profile
 
 		CreateMap<WholesalerInventory, WholesalerInventoryDto>()
 			.ForMember(f => f.FixedPrice,
-			opt => opt.MapFrom(m => m.Beer.Price);
+			opt => opt.MapFrom(m => m.Beer.Price));
 
 		CreateMap<BeerCreateDto, Beer>();
 	}
