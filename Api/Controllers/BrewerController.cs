@@ -1,5 +1,6 @@
 ﻿using Application.Commands.BrewerCommands;
 using Application.DTOs;
+using Application.Exceptions;
 using Application.Queries.BrewerQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -13,11 +14,20 @@ public class BrewerController(IMediator mediator) : ControllerBase
 
     [HttpGet]
     [Route("{id}/Beers")]
-    public async Task<IList<BeerDto>?> Beers(string id)
+    [ProducesResponseType<BrewerDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<IList<BeerDto>>> Beers(string id)
     {
-        var beers = await _mediator.Send(new GetAllBeersByBrewerQuery(id));
+        try
+        {
+            var beers = await _mediator.Send(new GetAllBeersByBrewerQuery(id));
 
-        return beers;
+            return Ok(beers);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            return CreateNotFoundResult(exception);
+        }
     }
 
     [HttpPost]
@@ -45,5 +55,11 @@ public class BrewerController(IMediator mediator) : ControllerBase
         var obj = await _mediator.Send(new DeleteBeerCommand(id, beerId));
 
         return obj;
+    }
+
+    private NotFoundObjectResult CreateNotFoundResult(ResourceNotFoundException exception)
+    {
+        var message = $"Brewer with id '{exception.ResourceId}' was not found.";
+        return NotFound(new ErrorDto(exception, message));
     }
 }

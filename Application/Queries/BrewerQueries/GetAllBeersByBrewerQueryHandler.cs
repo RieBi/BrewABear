@@ -1,25 +1,21 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using Application.Exceptions;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Application.Queries.BrewerQueries;
-internal class GetAllBeersByBrewerQueryHandler(DataContext context, IMapper mapper) : IRequestHandler<GetAllBeersByBrewerQuery, IList<BeerDto>?>
+internal class GetAllBeersByBrewerQueryHandler(DataContext context, IMapper mapper) : IRequestHandler<GetAllBeersByBrewerQuery, IList<BeerDto>>
 {
     private readonly DataContext _context = context;
     private readonly IMapper _mapper = mapper;
 
-    public async Task<IList<BeerDto>?> Handle(GetAllBeersByBrewerQuery request, CancellationToken cancellationToken)
+    public async Task<IList<BeerDto>> Handle(GetAllBeersByBrewerQuery request, CancellationToken cancellationToken)
     {
         var count = await _context.Brewers
             .Where(f => f.Id == request.BrewerId)
             .CountAsync(cancellationToken);
 
         if (count == 0)
-            return null;
+            throw new ResourceNotFoundException(request.BrewerId);
 
         IList<BeerDto> beers = await _context.Beers
             .Include(f => f.Brewer)
