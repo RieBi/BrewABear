@@ -1,4 +1,5 @@
 ﻿using Application.DTOs;
+using Application.Exceptions;
 using Application.Queries.BreweryQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -15,25 +16,49 @@ public class BreweryController(IMediator mediator) : ControllerBase
     public async Task<IList<BreweryDto>> All()
     {
         var breweries = await _mediator.Send(new GetAllBreweriesQuery());
-
+        
         return breweries;
     }
 
     [HttpGet]
     [Route("{id}/Beers")]
-    public async Task<IList<BeerDto>?> Beers(string id)
+    [ProducesResponseType<BeerDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<IList<BeerDto>>> Beers(string id)
     {
-        var beers = await _mediator.Send(new GetAllBeersInBreweryQuery(id));
+        try
+        {
+            var beers = await _mediator.Send(new GetAllBeersInBreweryQuery(id));
 
-        return beers;
+            return Ok(beers);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            return CreateNotFoundResult(exception);
+        }
     }
 
     [HttpGet]
     [Route("{id}/Brewers")]
-    public async Task<IList<BrewerDto>?> Brewers(string id)
+    [ProducesResponseType<BrewerDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<IList<BrewerDto>>> Brewers(string id)
     {
-        var brewers = await _mediator.Send(new GetAllBrewersInBreweryQuery(id));
+        try
+        {
+            var brewers = await _mediator.Send(new GetAllBrewersInBreweryQuery(id));
 
-        return brewers;
+            return Ok(brewers);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            return CreateNotFoundResult(exception);
+        }
+    }
+
+    private NotFoundObjectResult CreateNotFoundResult(ResourceNotFoundException exception)
+    {
+        var message = $"Brewery with id '{exception.ResourceId}' was not found.";
+        return NotFound(new ErrorDto(exception, message));
     }
 }

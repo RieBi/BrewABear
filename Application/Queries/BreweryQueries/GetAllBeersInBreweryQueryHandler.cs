@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using Application.Exceptions;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 
 namespace Application.Queries.BreweryQueries;
@@ -14,7 +15,7 @@ internal class GetAllBeersInBreweryQueryHandler(DataContext context, IMapper map
             .CountAsync(cancellationToken);
 
         if (count == 0)
-            return null;
+            throw new ResourceNotFoundException(request.BreweryId);
 
         IList<BeerDto> beers = await _context.Beers
             .Include(f => f.Brewer)
