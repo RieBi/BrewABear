@@ -15,9 +15,5 @@ internal class BreweryConfiguration : IEntityTypeConfiguration<Brewery>
         builder
             .HasMany(f => f.Brewers)
             .WithOne(f => f.Brewery);
-
-        builder
-            .HasMany(f => f.Beers)
-            .WithOne(f => f.Brewer.Brewery);
     }
 }

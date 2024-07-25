@@ -1,5 +1,5 @@
 ﻿namespace Application.DTOs;
-internal class BeerDto
+public class BeerDto
 {
     public string Id { get; set; } = default!;
     public string BrewerId { get; set; } = default!;
