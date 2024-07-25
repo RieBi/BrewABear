@@ -37,4 +37,13 @@ public class BrewerController(IMediator mediator) : ControllerBase
 
         return updatedBeer;
     }
+
+    [HttpDelete]
+    [Route("{id}/DeleteBeer")]
+    public async Task<object?> DeleteBeer(string id, string beerId)
+    {
+        var obj = await _mediator.Send(new DeleteBeerCommand(id, beerId));
+
+        return obj;
+    }
 }
