@@ -1,22 +1,22 @@
-﻿namespace Application.Commands.BrewerCommands;
-internal class DeleteBeerCommandHandler(DataContext context) : IRequestHandler<DeleteBeerCommand, object?>
+﻿using Application.Exceptions;
+
+namespace Application.Commands.BrewerCommands;
+internal class DeleteBeerCommandHandler(DataContext context) : IRequestHandler<DeleteBeerCommand, Unit>
 {
     private readonly DataContext _context = context;
 
-    public async Task<object?> Handle(DeleteBeerCommand request, CancellationToken cancellationToken)
+    public async Task<Unit> Handle(DeleteBeerCommand request, CancellationToken cancellationToken)
     {
         var beer =
-            await _context.Beers.FindAsync([request.BeerId], cancellationToken: cancellationToken);
-
-        if (beer is null)
-            return null;
+            await _context.Beers.FindAsync([request.BeerId], cancellationToken: cancellationToken)
+            ?? throw new BeerNotFoundException(request.BeerId);
 
         if (beer.BrewerId != request.BrewerId)
-            return null;
+            throw new ResourceNotFoundException(request.BrewerId);
 
         _context.Beers.Remove(beer);
         await _context.SaveChangesAsync(cancellationToken);
 
-        return new();
+        return Unit.Value;
     }
 }
