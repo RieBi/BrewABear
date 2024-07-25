@@ -1,4 +1,5 @@
 using Application;
+using Application.Services;
 using Data;
 using Data.DataSeeding;
 
@@ -21,6 +22,8 @@ builder.Services.AddDatabase(connectionString!);
 
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IStarter>());
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfiles>());
+
+builder.Services.AddSingleton<IGuidCreator, GuidCreator>();
 
 var app = builder.Build();
 

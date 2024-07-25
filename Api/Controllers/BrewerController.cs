@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Commands.BrewerCommands;
+using Application.DTOs;
 using Application.Queries.BrewerQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -17,5 +18,14 @@ public class BrewerController(IMediator mediator) : ControllerBase
         var beers = await _mediator.Send(new GetAllBeersByBrewerQuery(id));
 
         return beers;
+    }
+
+    [HttpPost]
+    [Route("{id}/AddBeer")]
+    public async Task<BeerDto?> AddBeer(string id, BeerCreateDto beerCreateDto)
+    {
+        var newBeer = await _mediator.Send(new CreateBeerCommand(id, beerCreateDto));
+
+        return newBeer;
     }
 }

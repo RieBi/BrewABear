@@ -7,6 +7,6 @@ public class MappingProfiles : Profile
 		CreateMap<Beer, BeerDto>();
 		CreateMap<Brewer, BrewerDto>();
 
-		CreateMap<BeerDto, Beer>();
+		CreateMap<BeerCreateDto, Beer>();
 	}
 }

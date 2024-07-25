@@ -10,7 +10,7 @@ internal class CreateBeerCommandHandler(DataContext context, IMapper mapper, IGu
     public async Task<BeerDto?> Handle(CreateBeerCommand request, CancellationToken cancellationToken)
     {
         var brewer =
-            await _context.Brewers.FindAsync([request.Beer], cancellationToken: cancellationToken);
+            await _context.Brewers.FindAsync([request.BrewerId], cancellationToken: cancellationToken);
 
         if (brewer is null)
             return null;
