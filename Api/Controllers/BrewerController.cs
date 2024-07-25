@@ -28,4 +28,13 @@ public class BrewerController(IMediator mediator) : ControllerBase
 
         return newBeer;
     }
+
+    [HttpPut]
+    [Route("{id}/UpdateBeer")]
+    public async Task<BeerDto?> UpdateBeer(string id, string beerId, BeerCreateDto beerCreateDto)
+    {
+        var updatedBeer = await _mediator.Send(new UpdateBeerCommand(id, beerId, beerCreateDto));
+
+        return updatedBeer;
+    }
 }
