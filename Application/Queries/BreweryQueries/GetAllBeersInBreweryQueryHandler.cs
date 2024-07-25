@@ -16,16 +16,13 @@ internal class GetAllBeersInBreweryQueryHandler(DataContext context, IMapper map
         if (count == 0)
             return null;
 
-        var beers = await _context.Beers
+        IList<BeerDto> beers = await _context.Beers
             .Include(f => f.Brewer)
             .ThenInclude(f => f.Brewery)
             .Where(f => f.Brewer.Brewery.Id == request.BreweryId)
             .ProjectTo<BeerDto>(_mapper.ConfigurationProvider)
             .ToListAsync(cancellationToken);
 
-        if (beers is null)
-            return null;
-
-        return _mapper.Map<IList<BeerDto>>(beers);
+        return beers;
     }
 }
