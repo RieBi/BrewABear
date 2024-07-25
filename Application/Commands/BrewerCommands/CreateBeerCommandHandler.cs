@@ -1,4 +1,5 @@
-﻿using Application.Services;
+﻿using Application.Exceptions;
+using Application.Services;
 
 namespace Application.Commands.BrewerCommands;
 internal class CreateBeerCommandHandler(DataContext context, IMapper mapper, IGuidCreator creator) : IRequestHandler<CreateBeerCommand, BeerDto?>
@@ -13,7 +14,7 @@ internal class CreateBeerCommandHandler(DataContext context, IMapper mapper, IGu
             await _context.Brewers.FindAsync([request.BrewerId], cancellationToken: cancellationToken);
 
         if (brewer is null)
-            return null;
+            throw new ResourceNotFoundException(request.BrewerId);
 
         var newBeer = _mapper.Map<Beer>(request.Beer);
         newBeer.Brewer = brewer;

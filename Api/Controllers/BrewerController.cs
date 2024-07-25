@@ -32,11 +32,20 @@ public class BrewerController(IMediator mediator) : ControllerBase
 
     [HttpPost]
     [Route("{id}/AddBeer")]
-    public async Task<BeerDto?> AddBeer(string id, BeerCreateDto beerCreateDto)
+    [ProducesResponseType<BeerDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<BeerDto>> AddBeer(string id, BeerCreateDto beerCreateDto)
     {
-        var newBeer = await _mediator.Send(new CreateBeerCommand(id, beerCreateDto));
+        try
+        {
+            var newBeer = await _mediator.Send(new CreateBeerCommand(id, beerCreateDto));
 
-        return newBeer;
+            return Ok(newBeer);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            return CreateNotFoundResult(exception);
+        }
     }
 
     [HttpPut]
@@ -60,6 +69,12 @@ public class BrewerController(IMediator mediator) : ControllerBase
     private NotFoundObjectResult CreateNotFoundResult(ResourceNotFoundException exception)
     {
         var message = $"Brewer with id '{exception.ResourceId}' was not found.";
+        return NotFound(new ErrorDto(exception, message));
+    }
+
+    private NotFoundObjectResult CreateBeerNotFoundResult(BeerNotFoundException exception)
+    {
+        var message = $"Beer with id '{exception.ResourceId}' was not found.";
         return NotFound(new ErrorDto(exception, message));
     }
 }
