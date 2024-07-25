@@ -50,11 +50,24 @@ public class BrewerController(IMediator mediator) : ControllerBase
 
     [HttpPut]
     [Route("{id}/UpdateBeer")]
-    public async Task<BeerDto?> UpdateBeer(string id, string beerId, BeerCreateDto beerCreateDto)
+    [ProducesResponseType<BeerDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<BeerDto>> UpdateBeer(string id, string beerId, BeerCreateDto beerCreateDto)
     {
-        var updatedBeer = await _mediator.Send(new UpdateBeerCommand(id, beerId, beerCreateDto));
+        try
+        {
+            var updatedBeer = await _mediator.Send(new UpdateBeerCommand(id, beerId, beerCreateDto));
 
-        return updatedBeer;
+            return Ok(updatedBeer);
+        }
+        catch (BeerNotFoundException exception)
+        {
+            return CreateBeerNotFoundResult(exception);
+        }
+        catch (ResourceNotFoundException exception)
+        {
+            return CreateNotFoundResult(exception);
+        }
     }
 
     [HttpDelete]
