@@ -1,4 +1,5 @@
-﻿using Application.Commands.OrderCommands;
+﻿using Api.Services;
+using Application.Commands.OrderCommands;
 using Application.DTOs;
 using Application.Exceptions;
 using MediatR;
@@ -7,13 +8,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class OrderController(IMediator mediator) : ControllerBase
+public class OrderController(IMediator mediator, IExceptionHandlerService exceptionHandler) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IExceptionHandlerService _exceptionHandler = exceptionHandler;
 
     [HttpPost]
     [Route("Add")]
     [ProducesResponseType<OrderDto>(200)]
+    [ProducesResponseType<ErrorDto>(400)]
     [ProducesResponseType<ErrorDto>(404)]
     public async Task<ActionResult<OrderDto>> Add(OrderCreateDto orderCreateDto)
     {
@@ -23,17 +26,9 @@ public class OrderController(IMediator mediator) : ControllerBase
 
             return Ok(orderDto);
         }
-        catch (WholesalerNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateWholesalerNotFoundResult(exception);
-        }
-        catch (BeerNotFoundException exception)
-        {
-            return CreateBeerNotFoundResult(exception);
-        }
-        catch (NegativeQuantityException exception)
-        {
-            return CreateNegativeQuantityResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
     }
 
@@ -49,33 +44,9 @@ public class OrderController(IMediator mediator) : ControllerBase
 
             return Ok(info);
         }
-        catch (OrderNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateOrderNotFoundResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
-    }
-
-    private NotFoundObjectResult CreateWholesalerNotFoundResult(WholesalerNotFoundException exception)
-    {
-        var message = $"Brewery with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
-    }
-
-    private NotFoundObjectResult CreateBeerNotFoundResult(BeerNotFoundException exception)
-    {
-        var message = $"Beer with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
-    }
-
-    private NotFoundObjectResult CreateOrderNotFoundResult(OrderNotFoundException exception)
-    {
-        var message = $"Order with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
-    }
-
-    private BadRequestObjectResult CreateNegativeQuantityResult(NegativeQuantityException exception)
-    {
-        var message = $"Quantity can't be less than 0. Was: {exception.Quantity}";
-        return BadRequest(new ErrorDto(exception, message));
     }
 }
