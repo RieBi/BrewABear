@@ -1,3 +1,4 @@
+using Api.Services;
 using Application;
 using Application.Services;
 using Data;
@@ -25,6 +26,7 @@ builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfiles>());
 
 builder.Services.AddSingleton<IGuidCreator, GuidCreator>();
 builder.Services.AddSingleton<IOrderService, OrderService>();
+builder.Services.AddSingleton<IExceptionHandlerService, ExceptionHandlerService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 
 var app = builder.Build();
