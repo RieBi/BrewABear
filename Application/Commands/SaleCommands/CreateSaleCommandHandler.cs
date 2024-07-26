@@ -15,6 +15,9 @@ internal class CreateSaleCommandHandler(DataContext context, ISaleService saleSe
 
     public async Task<Unit> Handle(CreateSaleCommand request, CancellationToken cancellationToken)
     {
+        if (request.quantity < 0)
+            throw new NegativeQuantityException(request.quantity);
+
         var wholesaler = await _context.Wholesalers
             .FindAsync([request.WholesalerId], cancellationToken: cancellationToken)
             ?? throw new WholesalerNotFoundException(request.WholesalerId);

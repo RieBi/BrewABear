@@ -1,4 +1,5 @@
-﻿using Application.Commands.SaleCommands;
+﻿using Api.Services;
+using Application.Commands.SaleCommands;
 using Application.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -6,13 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class SaleController(IMediator mediator) : ControllerBase
+public class SaleController(IMediator mediator, IExceptionHandlerService exceptionHandler) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IExceptionHandlerService _exceptionHandler = exceptionHandler;
 
     [HttpPost]
     [Route("Add")]
     [ProducesResponseType(200)]
+    [ProducesResponseType<ErrorDto>(400)]
     [ProducesResponseType<ErrorDto>(404)]
     public async Task<ActionResult> Add(string wholesalerId, string beerId, int quantity)
     {
@@ -22,25 +25,9 @@ public class SaleController(IMediator mediator) : ControllerBase
 
             return Ok();
         }
-        catch (WholesalerNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateWholesalerNotFoundResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
-        catch (BeerNotFoundException exception)
-        {
-            return CreateBeerNotFoundResult(exception);
-        }
-    }
-
-    private NotFoundObjectResult CreateWholesalerNotFoundResult(WholesalerNotFoundException exception)
-    {
-        var message = $"Wholesaler with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
-    }
-
-    private NotFoundObjectResult CreateBeerNotFoundResult(BeerNotFoundException exception)
-    {
-        var message = $"Beer with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
     }
 }

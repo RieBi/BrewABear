@@ -3,7 +3,6 @@ using Application.DTOs;
 using Application.Exceptions;
 using Application.Queries.BreweryQueries;
 using MediatR;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
