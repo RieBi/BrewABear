@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Api.Services;
+using Application.DTOs;
 using Application.Exceptions;
 using Application.Queries.WholesalerQueries;
 using MediatR;
@@ -7,9 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class WholesalerController(IMediator mediator) : ControllerBase
+public class WholesalerController(IMediator mediator, IExceptionHandlerService exceptionHandler) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IExceptionHandlerService _exceptionHandler = exceptionHandler;
 
     [HttpGet]
     [Route("All")]
@@ -33,15 +35,9 @@ public class WholesalerController(IMediator mediator) : ControllerBase
 
             return Ok(wholesalerInventory);
         }
-        catch (ResourceNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateNotFoundResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
-    }
-
-    private NotFoundObjectResult CreateNotFoundResult(ResourceNotFoundException exception)
-    {
-        var message = $"Wholesaler with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
     }
 }

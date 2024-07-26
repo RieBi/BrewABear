@@ -15,7 +15,7 @@ internal class GetWholesalerInventoryQueryHandler(DataContext context, IMapper m
             .CountAsync(cancellationToken);
 
         if (count == 0)
-            throw new ResourceNotFoundException(request.WholesalerId);
+            throw new WholesalerNotFoundException(request.WholesalerId);
 
         IList<WholesalerInventoryDto> inventoryItems = await _context.WholesalerInventories
             .Where(f => f.WholesalerId == request.WholesalerId)
