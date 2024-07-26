@@ -23,8 +23,26 @@ public class BreweryController(IMediator mediator, IExceptionHandlerService exce
     }
 
     [HttpGet]
+    [Route("{id}/Details")]
+    [ProducesResponseType<BreweryDto>(200)]
+    [ProducesResponseType<EmptyResult>(404)]
+    public async Task<ActionResult<BreweryDto>> Details(string id)
+    {
+        try
+        {
+            var brewery = await _mediator.Send(new GetBreweryDetailsQuery(id));
+
+            return Ok(brewery);
+        }
+        catch (Exception ex)
+        {
+            return _exceptionHandler.HandleException(ex);
+        }
+    }
+
+    [HttpGet]
     [Route("{id}/Beers")]
-    [ProducesResponseType<BeerDto>(200)]
+    [ProducesResponseType<IList<BeerDto>>(200)]
     [ProducesResponseType<ErrorDto>(404)]
     public async Task<ActionResult<IList<BeerDto>>> Beers(string id)
     {
@@ -42,7 +60,7 @@ public class BreweryController(IMediator mediator, IExceptionHandlerService exce
 
     [HttpGet]
     [Route("{id}/Brewers")]
-    [ProducesResponseType<BrewerDto>(200)]
+    [ProducesResponseType<IList<BrewerDto>>(200)]
     [ProducesResponseType<ErrorDto>(404)]
     public async Task<ActionResult<IList<BrewerDto>>> Brewers(string id)
     {
