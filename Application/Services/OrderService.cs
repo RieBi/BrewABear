@@ -1,7 +1,8 @@
 ﻿namespace Application.Services;
 public class OrderService : IOrderService
 {
-    public decimal GetFinalPrice(Order order) => order.Quantity * order.PricePerBear;
+    public decimal GetFinalPrice(Order order) => order.Quantity * order.PricePerBear * (1 - order.DiscountPercentage);
+    public decimal GetFinalPrice(OrderDto order) => order.Quantity * order.PricePerBear * (1 - order.DiscountPercentage);
 
     public decimal GetQuotaPercentage(Order order)
     {

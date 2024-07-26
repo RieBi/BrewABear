@@ -2,6 +2,7 @@
 using Application.Commands.OrderCommands;
 using Application.DTOs;
 using Application.Exceptions;
+using Application.Queries.OrderQueries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,6 +13,16 @@ public class OrderController(IMediator mediator, IExceptionHandlerService except
 {
     private readonly IMediator _mediator = mediator;
     private readonly IExceptionHandlerService _exceptionHandler = exceptionHandler;
+
+    [HttpGet]
+    [Route("All")]
+    [ProducesResponseType<IList<OrderDto>>(200)]
+    public async Task<ActionResult<IList<OrderDto>>> All()
+    {
+        var orders = await _mediator.Send(new GetAllOrdersQuery());
+
+        return Ok(orders);
+    }
 
     [HttpPost]
     [Route("Add")]
