@@ -12,7 +12,7 @@ internal class DeleteBeerCommandHandler(DataContext context) : IRequestHandler<D
             ?? throw new BeerNotFoundException(request.BeerId);
 
         if (beer.BrewerId != request.BrewerId)
-            throw new ResourceNotFoundException(request.BrewerId);
+            throw new BrewerNotFoundException(request.BrewerId);
 
         _context.Beers.Remove(beer);
         await _context.SaveChangesAsync(cancellationToken);

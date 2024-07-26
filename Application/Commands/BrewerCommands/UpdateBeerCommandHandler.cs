@@ -13,7 +13,10 @@ internal class UpdateBeerCommandHandler(DataContext context, IMapper mapper) : I
             ?? throw new BeerNotFoundException(request.BeerId);
 
         if (beer.BrewerId != request.BrewerId)
-            throw new ResourceNotFoundException(request.BrewerId);
+            throw new BrewerNotFoundException(request.BrewerId);
+
+        if (request.Beer.Price < 0)
+            throw new NegativePriceException(request.Beer.Price);
 
         beer.Name = request.Beer.Name;
         beer.Flavor = request.Beer.Flavor;
