@@ -24,6 +24,7 @@ builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblyContaining<IS
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfiles>());
 
 builder.Services.AddSingleton<IGuidCreator, GuidCreator>();
+builder.Services.AddSingleton<IOrderService, OrderService>();
 builder.Services.AddScoped<ISaleService, SaleService>();
 
 var app = builder.Build();
