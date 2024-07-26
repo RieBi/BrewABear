@@ -24,10 +24,28 @@ public class WholesalerController(IMediator mediator, IExceptionHandlerService e
     }
 
     [HttpGet]
-    [Route("{id}/Inventory")]
-    [ProducesResponseType<IList<WholesalerDto>>(200)]
+    [Route("{id}/Details")]
+    [ProducesResponseType<WholesalerDto>(200)]
     [ProducesResponseType<ErrorDto>(404)]
-    public async Task<ActionResult<IList<WholesalerDto>>> Inventory(string id)
+    public async Task<ActionResult<WholesalerDto>> Details(string id)
+    {
+        try
+        {
+            var wholesaler = await _mediator.Send(new GetWholesalerDetailsQuery(id));
+
+            return Ok(wholesaler);
+        }
+        catch (Exception ex)
+        {
+            return _exceptionHandler.HandleException(ex);
+        }
+    }
+
+    [HttpGet]
+    [Route("{id}/Inventory")]
+    [ProducesResponseType<IList<WholesalerInventoryDto>>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<IList<WholesalerInventoryDto>>> Inventory(string id)
     {
         try
         {
