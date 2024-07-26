@@ -37,6 +37,24 @@ public class OrderController(IMediator mediator) : ControllerBase
         }
     }
 
+    [HttpPost]
+    [Route("RequestQuote")]
+    [ProducesResponseType<QuoteInfoDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<QuoteInfoDto>> RequestQuote(string orderId)
+    {
+        try
+        {
+            var info = await _mediator.Send(new RequestQuoteCommand(orderId));
+
+            return Ok(info);
+        }
+        catch (OrderNotFoundException exception)
+        {
+            return CreateOrderNotFoundResult(exception);
+        }
+    }
+
     private NotFoundObjectResult CreateWholesalerNotFoundResult(WholesalerNotFoundException exception)
     {
         var message = $"Brewery with id '{exception.ResourceId}' was not found.";
@@ -46,6 +64,12 @@ public class OrderController(IMediator mediator) : ControllerBase
     private NotFoundObjectResult CreateBeerNotFoundResult(BeerNotFoundException exception)
     {
         var message = $"Beer with id '{exception.ResourceId}' was not found.";
+        return NotFound(new ErrorDto(exception, message));
+    }
+
+    private NotFoundObjectResult CreateOrderNotFoundResult(OrderNotFoundException exception)
+    {
+        var message = $"Order with id '{exception.ResourceId}' was not found.";
         return NotFound(new ErrorDto(exception, message));
     }
 
