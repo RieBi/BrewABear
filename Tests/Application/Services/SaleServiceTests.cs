@@ -1,22 +1,27 @@
-﻿using Application.Services;
+﻿using Application.Queries.BrewerQueries;
+using Application.Services;
 using Domain.Models;
 
 namespace Tests.Application.Services;
 public class SaleServiceTests
 {
-    public static TheoryData<List<WholesalerInventory>, Beer, Wholesaler, int, List<WholesalerInventory>> GetExistingInventories()
-    {
-        List<Beer> beers =
+    static List<Beer> GetBeers =>
         [
             new() { Id = "1", Name = "Test1" },
             new() { Id = "2", Name = "Test2" },
         ];
 
-        List<Wholesaler> salers =
+    static List<Wholesaler> GetWholesalers =>
         [
             new() { Id = "W1", Name = "Saler1" },
             new() { Id = "W2", Name = "Saler2" },
         ];
+
+    public static TheoryData<List<WholesalerInventory>, Beer, Wholesaler, int, List<WholesalerInventory>> GetExistingInventories()
+    {
+        var beers = GetBeers;
+
+        List<Wholesaler> salers = GetWholesalers;
 
         List<WholesalerInventory> inventories =
         [
@@ -63,6 +68,36 @@ public class SaleServiceTests
         };
     }
 
+    public static TheoryData<List<WholesalerInventory>, Beer, Wholesaler, int, List<WholesalerInventory>> GetUpdatedInventories()
+    {
+        var beers = GetBeers;
+        var salers = GetWholesalers;
+
+        List<WholesalerInventory> inventory =
+            [   
+                new()
+                { Beer = beers[1], BeerId = beers[1].Id,
+                    Wholesaler = salers[1], WholesalerId = salers[1].Id,
+                    Quantity = 10
+                }
+            ];
+
+        List<WholesalerInventory> expectedInventory =
+            [
+                new()
+                { Beer = beers[1], BeerId = beers[1].Id,
+                    Wholesaler = salers[1], WholesalerId = salers[1].Id,
+                    Quantity = 10
+                }
+            ];
+
+        return new()
+        {
+            { [], beers[0], salers[0], 5, [] },
+            { inventory, beers[0], salers[0], 10, expectedInventory }
+        };
+    }
+
     [Theory]
     [MemberData(nameof(GetExistingInventories))]
     public void UpdatesExistingInventory(
@@ -78,5 +113,22 @@ public class SaleServiceTests
 
         Assert.Null(result);
         Assert.Equivalent(expected, inventory);
+    }
+
+    [Theory]
+    [MemberData(nameof(GetUpdatedInventories))]
+    public void CreatesNewInventory(
+        List<WholesalerInventory> inventory,
+        Beer beer,
+        Wholesaler wholesaler,
+        int quantity,
+        List<WholesalerInventory> expected)
+    {
+        var service = new SaleService();
+
+        var result = service.CreateSale(inventory, wholesaler, beer, quantity);
+
+        Assert.Equivalent(expected, inventory);
+        Assert.NotNull(result);
     }
 }
