@@ -10,9 +10,12 @@ public class ExceptionHandlerService : IExceptionHandlerService
         return exception switch
         {
             BeerNotFoundException ex => CreateBeerNotFoundResult(ex),
-            WholesalerNotFoundException ex => CreateWholesalerNotFoundResult(ex),
+            BrewerNotFoundException ex => CreateBrewerNotFoundResult(ex),
+            BreweryNotFoundException ex => CreateBreweryNotFoundResult(ex),
             OrderNotFoundException ex => CreateOrderNotFoundResult(ex),
+            WholesalerNotFoundException ex => CreateWholesalerNotFoundResult(ex),
             ResourceNotFoundException ex => CreateNotFoundResult(ex),
+
             NegativePriceException ex => CreateNegativePriceResult(ex),
             NegativeQuantityException ex => CreateNegativeQuantityResult(ex),
             _ => CreateGenericErrorResult(exception)
@@ -31,15 +34,27 @@ public class ExceptionHandlerService : IExceptionHandlerService
         return new(new ErrorDto(exception, message));
     }
 
-    private static NotFoundObjectResult CreateWholesalerNotFoundResult(WholesalerNotFoundException exception)
+    private static NotFoundObjectResult CreateBrewerNotFoundResult(BrewerNotFoundException exception)
     {
-        var message = $"Wholesaler with id '{exception.ResourceId}' was not found.";
+        var message = $"Brewer with id '{exception.ResourceId}' was not found.";
+        return new(new ErrorDto(exception, message));
+    }
+    
+    private static NotFoundObjectResult CreateBreweryNotFoundResult(BreweryNotFoundException exception)
+    {
+        var message = $"Brewery with id '{exception.ResourceId}' was not found.";
         return new(new ErrorDto(exception, message));
     }
 
     private static NotFoundObjectResult CreateOrderNotFoundResult(OrderNotFoundException exception)
     {
         var message = $"Order with id '{exception.ResourceId}' was not found.";
+        return new(new ErrorDto(exception, message));
+    }
+
+    private static NotFoundObjectResult CreateWholesalerNotFoundResult(WholesalerNotFoundException exception)
+    {
+        var message = $"Wholesaler with id '{exception.ResourceId}' was not found.";
         return new(new ErrorDto(exception, message));
     }
 

@@ -15,7 +15,7 @@ internal class GetAllBrewersInBreweryQueryHandler(DataContext context, IMapper m
             .CountAsync(cancellationToken);
 
         if (count == 0)
-            throw new ResourceNotFoundException(request.BreweryId);
+            throw new BreweryNotFoundException(request.BreweryId);
 
         IList<BrewerDto> brewers = await _context.Brewers
             .Where(f => f.Brewery.Id == request.BreweryId)

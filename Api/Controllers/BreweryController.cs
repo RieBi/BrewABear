@@ -1,15 +1,18 @@
-﻿using Application.DTOs;
+﻿using Api.Services;
+using Application.DTOs;
 using Application.Exceptions;
 using Application.Queries.BreweryQueries;
 using MediatR;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Controllers;
 [Route("api/[controller]")]
 [ApiController]
-public class BreweryController(IMediator mediator) : ControllerBase
+public class BreweryController(IMediator mediator, IExceptionHandlerService exceptionHandler) : ControllerBase
 {
     private readonly IMediator _mediator = mediator;
+    private readonly IExceptionHandlerService _exceptionHandler = exceptionHandler;
 
     [HttpGet]
     [Route("All")]
@@ -32,9 +35,9 @@ public class BreweryController(IMediator mediator) : ControllerBase
 
             return Ok(beers);
         }
-        catch (ResourceNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateNotFoundResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
     }
 
@@ -50,15 +53,9 @@ public class BreweryController(IMediator mediator) : ControllerBase
 
             return Ok(brewers);
         }
-        catch (ResourceNotFoundException exception)
+        catch (Exception ex)
         {
-            return CreateNotFoundResult(exception);
+            return _exceptionHandler.HandleException(ex);
         }
-    }
-
-    private NotFoundObjectResult CreateNotFoundResult(ResourceNotFoundException exception)
-    {
-        var message = $"Brewery with id '{exception.ResourceId}' was not found.";
-        return NotFound(new ErrorDto(exception, message));
     }
 }
