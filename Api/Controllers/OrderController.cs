@@ -24,6 +24,24 @@ public class OrderController(IMediator mediator, IExceptionHandlerService except
         return Ok(orders);
     }
 
+    [HttpGet]
+    [Route("{id}/Details")]
+    [ProducesResponseType<OrderDto>(200)]
+    [ProducesResponseType<ErrorDto>(404)]
+    public async Task<ActionResult<OrderDto>> Details(string id)
+    {
+        try
+        {
+            var order = await _mediator.Send(new GetOrderDetailsQuery(id));
+
+            return Ok(order);
+        }
+        catch (Exception ex)
+        {
+            return _exceptionHandler.HandleException(ex);
+        }
+    }
+
     [HttpPost]
     [Route("Add")]
     [ProducesResponseType<OrderDto>(200)]
