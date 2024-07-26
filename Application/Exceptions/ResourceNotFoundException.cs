@@ -1,5 +1,5 @@
 ﻿namespace Application.Exceptions;
-public class ResourceNotFoundException(string resourceId) : Exception
+public class ResourceNotFoundException(string resourceId) : BrewABeerException
 {
     public string ResourceId { get; set; } = resourceId;
 }
