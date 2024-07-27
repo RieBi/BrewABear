@@ -14,6 +14,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(opt => opt.SupportNonNullableReferenceTypes());
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
 if (string.IsNullOrEmpty(connectionString))
 {
     throw new InvalidOperationException("Connection string could not be loaded from settings.");
@@ -44,8 +45,13 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-using (var scope = app.Services.CreateScope())
+var isTestMode = Array.Exists(AppDomain.CurrentDomain.GetAssemblies(),
+    a => a.FullName?.StartsWith("xunit", StringComparison.InvariantCultureIgnoreCase) ?? false);
+
+if (!isTestMode)
 {
+    using var scope = app.Services.CreateScope();
+
     var seeder = scope.ServiceProvider.GetRequiredService<DataSeeder>();
     seeder.ApplySeeding();
 }
