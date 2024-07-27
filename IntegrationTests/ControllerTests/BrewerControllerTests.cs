@@ -61,6 +61,31 @@ public class BrewerControllerTests(ApiApplicationFactory factory) : IClassFixtur
         created?.Name.Should().BeEquivalentTo(newBrewer.Name);
     }
 
+    [Theory]
+    [InlineData("/Api/Brewer/{0}/UpdateBeer?beerId={1}")]
+    public async Task UpdateBeer_ReturnsUpdatedBeer(string url)
+    {
+        var client = _factory.CreateClient();
+        var brewer = await GetBrewer(client);
+
+        var beers = await client.GetFromJsonAsync<List<BeerDto>>(string.Format("/Api/Brewer/{0}/Beers", brewer?.Id));
+        var newBeer = new BeerCreateDto()
+        {
+            Name = "Modified",
+            Description = "Modified",
+            Flavor = "Modified",
+            Price = 1
+        };
+
+        var response = await client.PutAsJsonAsync(string.Format(url, brewer?.Id, beers?[0].Id), newBeer);
+        var created = await response.Content.ReadFromJsonAsync<BeerDto>();
+
+        response.EnsureSuccessStatusCode();
+        created.Should().NotBeNull();
+        created?.Id.Should().NotBeNullOrWhiteSpace();
+        created?.Name.Should().BeEquivalentTo(newBeer.Name);
+    }
+
     private static async Task<BrewerDto?> GetBrewer(HttpClient client)
     {
         var breweries = await client.GetFromJsonAsync<List<BreweryDto>>("/Api/Brewery/All");
