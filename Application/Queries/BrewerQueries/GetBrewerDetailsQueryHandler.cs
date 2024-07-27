@@ -11,10 +11,10 @@ internal class GetBrewerDetailsQueryHandler(DataContext context, IMapper mapper)
     public async Task<BrewerDto> Handle(GetBrewerDetailsQuery request, CancellationToken cancellationToken)
     {
         var brewer = await _context.Brewers
-            .Where(f => f.Id == request.brewerId)
+            .Where(f => f.Id == request.BrewerId)
             .ProjectTo<BrewerDto>(_mapper.ConfigurationProvider)
             .FirstOrDefaultAsync(cancellationToken)
-            ?? throw new BrewerNotFoundException(request.brewerId);
+            ?? throw new BrewerNotFoundException(request.BrewerId);
 
         return _mapper.Map<BrewerDto>(brewer);
     }
