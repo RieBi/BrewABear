@@ -1,11 +1,6 @@
 ﻿using Application.DTOs;
 using FluentAssertions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace IntegrationTests.ControllerTests;
 public class BrewerControllerTests(ApiApplicationFactory factory) : IClassFixture<ApiApplicationFactory>
@@ -13,11 +8,25 @@ public class BrewerControllerTests(ApiApplicationFactory factory) : IClassFixtur
     private readonly ApiApplicationFactory _factory = factory;
 
     [Theory]
+    [InlineData("/Api/Brewer/{0}/Beers")]
+    public async Task GetBrewerBeers_ReturnsBeers(string url)
+    {
+        var client = _factory.CreateClient();
+        var brewer = await GetBrewer(client);
+
+        var response = await client.GetFromJsonAsync<List<BeerDto>>(string.Format(url, brewer?.Id));
+
+        response.Should().NotBeNull();
+        response?.Count.Should().BeGreaterThan(0);
+        response?[0].Should().NotBeNull();
+        response?[0].Name.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Theory]
     [InlineData("/Api/Brewer/{0}/Details")]
     public async Task GetBrewerDetails_ReturnsDetails(string url)
     {
         var client = _factory.CreateClient();
-
         var brewer = await GetBrewer(client);
 
         var response = await client.GetFromJsonAsync<BrewerDto>(string.Format(url, brewer?.Id));
@@ -26,6 +35,30 @@ public class BrewerControllerTests(ApiApplicationFactory factory) : IClassFixtur
         response?.Id.Should().BeEquivalentTo(brewer?.Id);
         response?.FirstName.Should().NotBeNullOrWhiteSpace();
         response?.ContactEmail.Should().NotBeNullOrWhiteSpace();
+    }
+
+    [Theory]
+    [InlineData("/Api/Brewer/{0}/AddBeer")]
+    public async Task AddBeer_ReturnsCreatedBeer(string url)
+    {
+        var client = _factory.CreateClient();
+        var brewer = await GetBrewer(client);
+
+        var newBrewer = new BeerCreateDto()
+        {
+            Name = "Integration beer",
+            Description = "Beer used in integration testing",
+            Flavor = "Flavory",
+            Price = 10,
+        };
+
+        var response = await client.PostAsJsonAsync(string.Format(url, brewer?.Id), newBrewer);
+        var created = await response.Content.ReadFromJsonAsync<BeerDto>();
+
+        response.EnsureSuccessStatusCode();
+        created.Should().NotBeNull();
+        created?.Id.Should().NotBeNullOrWhiteSpace();
+        created?.Name.Should().BeEquivalentTo(newBrewer.Name);
     }
 
     private static async Task<BrewerDto?> GetBrewer(HttpClient client)
