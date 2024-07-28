@@ -33,3 +33,10 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/brewabear:latest
           file: Api/Dockerfile
+      -
+        name: Publish image to webapp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: 'brewabear'
+          publish-profile: ${{ secrets.PublishProfile }}
+          images: 'https://index.docker.io/riebisv/brewabear:latest'
