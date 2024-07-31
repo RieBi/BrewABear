@@ -1,5 +1,5 @@
 # BrewABear
-BrewABear is a comprehensive management system designed for breweries and wholesalers in the beer industry. This ASP.NET Core API provides a robust backend for tracking breweries, brewers, beers, wholesalers, sales, and orders. With features like inventory management, quote generation, and discount application, BrewABear streamlines operations for both beer producers and distributors. Built with clean architecture and CQRS pattern, it offers a scalable and maintainable solution for the craft beer ecosystem.
+BrewABear is a management system designed for breweries and wholesalers. This ASP.NET Core API provides a robust backend for tracking breweries, brewers, beers, wholesalers, sales, and orders. With features like inventory management, quote generation, and discount application, BrewABear streamlines operations for both beer producers and distributors. Built with clean architecture and CQRS pattern, it offers a scalable and maintainable solution for the craft beer ecosystem.
 
 Access API website: https://brewabear-fmehdeerdpfectgw.westeurope-01.azurewebsites.net/swagger/index.html
 
